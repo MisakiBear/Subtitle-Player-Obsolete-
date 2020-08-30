@@ -5,25 +5,70 @@
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:BearSubPlayer"
         mc:Ignorable="d"
-        Title="BearSubPlayer" Height="82" Width="688" WindowStyle="None" AllowsTransparency="True" WindowStartupLocation="Manual" Topmost="True" ShowInTaskbar="False">
+        Title="BearSubPlayer"
+        Height="82" Width="688" WindowStyle="None" AllowsTransparency="True"
+        WindowStartupLocation="Manual" Topmost="True" ShowInTaskbar="False"
+        MouseDown="Main_MouseDown" MouseMove="Main_MouseMove"
+        MouseLeave="Main_MouseLeave">
     <Window.Background>
         <SolidColorBrush Color="White" Opacity="0.5"/>
     </Window.Background>
     <Canvas x:Name="MainCanvas">
-        <Label x:Name="SubLabel" Content="Double click there to select a srt file" Height="80" BorderThickness="15,0,15,0" HorizontalContentAlignment="Center" VerticalContentAlignment="Center" Canvas.Top="0" Canvas.Left="0" Canvas.Right="0" Padding="0,0,0,0" FontSize="32" Foreground="White">
+        <Label x:Name="SubLabel" Content="Double click there to select a srt file"
+               Height="80" BorderThickness="15,0,15,0" Padding="0,0,0,0"
+               HorizontalContentAlignment="Center" VerticalContentAlignment="Center"
+               Canvas.Top="0" Canvas.Left="0" Canvas.Right="0"
+               FontSize="32" Foreground="White"
+               MouseDoubleClick="SubLabel_MouseDoubleClick">
             <Label.Effect>
                 <DropShadowEffect Color="White" Direction="320" ShadowDepth="5" Opacity="0.5" BlurRadius="8"/>
             </Label.Effect>
         </Label>
-        <StackPanel x:Name="MenuPanel" Orientation="Horizontal" Height="18" Width="540" Canvas.Top="62" >
-            <Label x:Name="TimeLb" Content="00:00:00 / 00:00:00" Height="18" Width="140" FontSize="14" VerticalContentAlignment="Center" BorderThickness="0" HorizontalContentAlignment="Center" Padding="0,0,0,0" Foreground="Black"/>
-            <Slider x:Name="TimeSld" Width="250" SmallChange="1" LargeChange="10" Maximum="100" IsEnabled="False"/>
-            <Label x:Name="PlayLb" Content="▶️" Height="18" Width="24" FontSize="14" VerticalContentAlignment="Center" BorderThickness="0" HorizontalContentAlignment="Center" Padding="0,0,0,0" Foreground="Black" IsEnabled="False"/>
-            <Label x:Name="BackwardLb" Content="⏪" Height="18" Width="24" FontSize="14" VerticalContentAlignment="Center" BorderThickness="0" HorizontalContentAlignment="Center" Padding="0,0,0,0" Foreground="Black" IsEnabled="False"/>
-            <Label x:Name="ForwardLb" Content="⏩" Height="18" Width="24" FontSize="14" VerticalContentAlignment="Center" BorderThickness="0" HorizontalContentAlignment="Center" Padding="0,0,0,0" Foreground="Black" IsEnabled="False"/>
-            <Label x:Name="PauseLb" Content="⏸️" Height="18" Width="24" FontSize="14" VerticalContentAlignment="Center" BorderThickness="0" HorizontalContentAlignment="Center" Padding="0,0,0,0" Foreground="Black" IsEnabled="False"/>
-            <Label x:Name="StopLb" Content="⏹️" Height="18" Width="24" FontSize="14" VerticalContentAlignment="Center" BorderThickness="0" HorizontalContentAlignment="Center" Padding="0,0,0,0" Foreground="Black" IsEnabled="False"/>
-            <Label x:Name="SettingLb" Content="⚙️" Height="18" Width="24" FontSize="14" VerticalContentAlignment="Center" BorderThickness="0" HorizontalContentAlignment="Center" Padding="0,0,0,0" Foreground="Black"/>
+        <StackPanel x:Name="MenuPanel" Orientation="Horizontal" Height="18" Width="540" Canvas.Top="62">
+            <Label x:Name="TimeLb" Content="00:00:00 / 00:00:00"
+                   Height="18" Width="140" BorderThickness="0" Padding="0,0,0,0"
+                   HorizontalContentAlignment="Center"  VerticalContentAlignment="Center"
+                   FontSize="14" Foreground="Black"/>
+            <Slider x:Name="TimeSld" Width="250"
+                    SmallChange="1" LargeChange="10" Maximum="100" 
+                    IsEnabled="False"
+                    Mouse.MouseMove="TimeSld_MouseMove"/>
+            <Label x:Name="PlayLb" Content="▶️"
+                   Height="18" Width="24"  BorderThickness="0" Padding="0,0,0,0"
+                   HorizontalContentAlignment="Center" VerticalContentAlignment="Center"
+                   FontSize="14" Foreground="Black" IsEnabled="False"
+                   Mouse.MouseDown="PlayLb_MouseDown"
+                   Mouse.MouseMove="Label_MouseMove" Mouse.MouseLeave="Label_MouseLeave"/>
+            <Label x:Name="BackwardLb" Content="⏪"
+                   Height="18" Width="24" BorderThickness="0"  Padding="0,0,0,0"
+                   VerticalContentAlignment="Center" HorizontalContentAlignment="Center"
+                   FontSize="14"  Foreground="Black" IsEnabled="False"
+                   Mouse.MouseDown="BackWardLb_MouseDown"
+                   Mouse.MouseMove="Label_MouseMove" Mouse.MouseLeave="Label_MouseLeave"/>
+            <Label x:Name="ForwardLb" Content="⏩"
+                   Height="18" Width="24" BorderThickness="0" Padding="0,0,0,0"
+                   VerticalContentAlignment="Center"  HorizontalContentAlignment="Center"
+                   FontSize="14" Foreground="Black" IsEnabled="False"
+                   Mouse.MouseDown="ForWardLb_MouseDown"
+                   Mouse.MouseMove="Label_MouseMove" Mouse.MouseLeave="Label_MouseLeave"/>
+            <Label x:Name="PauseLb" Content="⏸️"
+                   Height="18" Width="24" BorderThickness="0" Padding="0,0,0,0"
+                   VerticalContentAlignment="Center"  HorizontalContentAlignment="Center"
+                   FontSize="14" Foreground="Black" IsEnabled="False"
+                   Mouse.MouseDown="PauseLb_MouseDown"
+                   Mouse.MouseMove="Label_MouseMove" Mouse.MouseLeave="Label_MouseLeave"/>
+            <Label x:Name="StopLb" Content="⏹️"
+                   Height="18" Width="24" BorderThickness="0" Padding="0,0,0,0"
+                   VerticalContentAlignment="Center" HorizontalContentAlignment="Center"
+                   FontSize="14" Foreground="Black" IsEnabled="False"
+                   Mouse.MouseDown="StopLb_MouseDown"
+                   Mouse.MouseMove="Label_MouseMove" Mouse.MouseLeave="Label_MouseLeave"/>
+            <Label x:Name="SettingLb" Content="⚙️"
+                   Height="18" Width="24" BorderThickness="0" Padding="0,0,0,0"
+                   VerticalContentAlignment="Center" HorizontalContentAlignment="Center" 
+                   FontSize="14" Foreground="Black"
+                   Mouse.MouseDown="SettingLb_MouseDown"
+                   Mouse.MouseMove="Label_MouseMove" Mouse.MouseLeave="Label_MouseLeave"/>
         </StackPanel>
     </Canvas>
 </Window>
