@@ -37,18 +37,18 @@ namespace BearSubPlayer
 
         private void OpacitySld_ValueChanged(object sender, EventArgs e)
         {
-            OpacityLb.Content = (int)OpacitySld.Value;
+            OpacityLb.Content = (int)(OpacitySld.Value * 100);  // Change float to %
             if ((bool)WhiteRBtn.IsChecked)
-                ArrHelper.ChangeBackground(Brushes.Black, Colors.White, OpacitySld.Value / 100);
+                ArrHelper.ChangeBackground(Brushes.Black, Colors.White, OpacitySld.Value);
             else
-                ArrHelper.ChangeBackground(Brushes.White, Colors.Black, OpacitySld.Value / 100);
+                ArrHelper.ChangeBackground(Brushes.White, Colors.Black, OpacitySld.Value);
         }
 
         private void WhiteRBtn_Checked(object sender, EventArgs e)
-            => ArrHelper.ChangeBackground(Brushes.Black, Colors.White, OpacitySld.Value / 100);
+            => ArrHelper.ChangeBackground(Brushes.Black, Colors.White, OpacitySld.Value);
 
         private void BlackRBtn_Checked(object sender, EventArgs e)
-            => ArrHelper.ChangeBackground(Brushes.White, Colors.Black, OpacitySld.Value / 100);
+            => ArrHelper.ChangeBackground(Brushes.White, Colors.Black, OpacitySld.Value);
 
         private void FontSizeSld_ValueChanged(object sender, EventArgs e)
         {
@@ -58,13 +58,13 @@ namespace BearSubPlayer
 
         private void Font_Changed(object sender, EventArgs e)
         {
-            FontShadowOpacityLb.Content = (int)FontShadowOpacitySld.Value;
-            FontShadowSoftnessLb.Content = (int)FontShadowSoftnessSld.Value / 10;
+            FontShadowOpacityLb.Content = (int)(FontShadowOpacitySld.Value * 100); // Change float to %
+            FontShadowSoftnessLb.Content = (int)FontShadowSoftnessSld.Value;
 
             if ((bool)FontWhiteRBtn.IsChecked)
-                ArrHelper.ChangeFontEffect(Brushes.White, Colors.White, FontShadowOpacitySld.Value / 100, FontShadowSoftnessSld.Value / 10);
+                ArrHelper.ChangeFontEffect(Brushes.White, Colors.White, FontShadowOpacitySld.Value, FontShadowSoftnessSld.Value);
             else
-                ArrHelper.ChangeFontEffect(Brushes.Black, Colors.Black, FontShadowOpacitySld.Value / 100, FontShadowSoftnessSld.Value / 10);
+                ArrHelper.ChangeFontEffect(Brushes.Black, Colors.Black, FontShadowOpacitySld.Value, FontShadowSoftnessSld.Value);
         }
 
         private void ExitBtn_Click(object sender, EventArgs e)

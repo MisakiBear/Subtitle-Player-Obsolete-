@@ -1,9 +1,9 @@
 ﻿<?xml version="1.0" encoding="utf-8" ?>
 <config>
-  <mainop value="0-100">50</mainop>
+  <mainop value="0-1">0.5</mainop>
   <maincol value="white=0, black=1">0</maincol>
   <fontsize  value="12-46">32</fontsize>
   <fontcol value="white=0, black=1">0</fontcol>
-  <fontop value="0-100">50</fontop>
-  <fontsn value="50-150">80</fontsn>
+  <fontop value="0-1">0.5</fontop>
+  <fontsn value="5-15">8</fontsn>
 </config>

@@ -128,6 +128,7 @@ namespace BearSubPlayer
             }
         }
 
+        // Arrange
         private void Label_MouseMove(object sender, EventArgs e)
         {
             var label = (Label)sender;

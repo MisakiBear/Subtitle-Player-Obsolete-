@@ -2,7 +2,7 @@
 
 namespace BearSubPlayer
 {
-    public class Subinfo
+    public class SubInfo
     {
         public TimeSpan TStart { get; set; }
         public TimeSpan TEnd { get; set; }

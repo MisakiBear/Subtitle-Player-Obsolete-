@@ -10,9 +10,9 @@
         <SolidColorBrush Color="White" Opacity="0.5"/>
     </Window.Background>
     <Canvas x:Name="MainCanvas">
-        <Label x:Name="SubLabel" Content="Double click there to select a srt file" Height="80" BorderThickness="15,0,15,0" HorizontalContentAlignment="Center" VerticalContentAlignment="Center" Canvas.Top="0" Canvas.Left="0" Canvas.Right="0" Padding="0,0,0,0" FontSize="32" Foreground="White" >
+        <Label x:Name="SubLabel" Content="Double click there to select a srt file" Height="80" BorderThickness="15,0,15,0" HorizontalContentAlignment="Center" VerticalContentAlignment="Center" Canvas.Top="0" Canvas.Left="0" Canvas.Right="0" Padding="0,0,0,0" FontSize="32" Foreground="White">
             <Label.Effect>
-                <DropShadowEffect Color="White" Direction="320" ShadowDepth="5" Opacity="0.5" BlurRadius="8" />
+                <DropShadowEffect Color="White" Direction="320" ShadowDepth="5" Opacity="0.5" BlurRadius="8"/>
             </Label.Effect>
         </Label>
         <StackPanel x:Name="MenuPanel" Orientation="Horizontal" Height="18" Width="540" Canvas.Top="62" >

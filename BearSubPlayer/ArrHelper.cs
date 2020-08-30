@@ -51,16 +51,16 @@ namespace BearSubPlayer
             var config = new Config();
 
             if (config.MainCol == 0)  // White
-                ChangeBackground(Brushes.Black, Colors.White, (double)config.MainOp / 100);
+                ChangeBackground(Brushes.Black, Colors.White, config.MainOp);
             else
-                ChangeBackground(Brushes.White, Colors.Black, (double)config.MainOp / 100);
+                ChangeBackground(Brushes.White, Colors.Black, config.MainOp);
 
             ChangeFontSize(config.FontSize);
 
             if (config.FontCol == 0)  // White
-                ChangeFontEffect(Brushes.White, Colors.White, (double)config.FontOp / 100, (double)config.FontSn / 10);
+                ChangeFontEffect(Brushes.White, Colors.White, config.FontOp, config.FontSn);
             else
-                ChangeFontEffect(Brushes.Black, Colors.Black, (double)config.FontOp / 100, (double)config.FontSn / 10);
+                ChangeFontEffect(Brushes.Black, Colors.Black, config.FontOp, config.FontSn);
         }
     }
 
@@ -71,7 +71,7 @@ namespace BearSubPlayer
             var config = new Config();
 
             OpacitySld.Value = config.MainOp;
-            OpacityLb.Content = config.MainOp;
+            OpacityLb.Content = (int)(config.MainOp * 100);
 
             if (config.MainCol == 0)  // White
                 WhiteRBtn.IsChecked = true;
@@ -87,18 +87,18 @@ namespace BearSubPlayer
                 FontBlackRBtn.IsChecked = true;
 
             FontShadowOpacitySld.Value = config.FontOp;
-            FontShadowOpacityLb.Content = config.FontOp;
+            FontShadowOpacityLb.Content = (int)(config.FontOp * 100);
             FontShadowSoftnessSld.Value = config.FontSn;
-            FontShadowSoftnessLb.Content = config.FontSn / 10;
+            FontShadowSoftnessLb.Content = config.FontSn;
         }
 
         private void Save()
         {
             var config = new Config
             {
-                MainOp = (int)OpacitySld.Value,
+                MainOp = Math.Round(OpacitySld.Value * 100) / 100,  // Round the number
                 FontSize = (int)FontSizeSld.Value,
-                FontOp = (int)FontShadowOpacitySld.Value,
+                FontOp = Math.Round(FontShadowOpacitySld.Value * 100) / 100,
                 FontSn = (int)FontShadowSoftnessSld.Value,
             };
 
