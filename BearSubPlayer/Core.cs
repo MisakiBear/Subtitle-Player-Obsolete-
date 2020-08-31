@@ -24,7 +24,7 @@ namespace BearSubPlayer
         public Core()
             => _timer.Elapsed += TimeObserver;
 
-        public async Task Play()
+        public async Task PlayAsync()
         {
             if (!_stopWatch.IsRunning)
             {
@@ -93,10 +93,10 @@ namespace BearSubPlayer
         private void TimeObserver(object sender = null, ElapsedEventArgs e = null)
         {
             var currenttime = _stopWatch.Elapsed + _baseTime;
-            var adjustedtime = currenttime + _adjustTime;
+            var adjustedcurrenttime = currenttime + _adjustTime;
             var adjustedtotaltime = _totalTime - _adjustTime;
 
-            var sub = _subList.FirstOrDefault(x => x.TStart <= adjustedtime && adjustedtime <= x.TEnd);
+            var sub = _subList.FirstOrDefault(x => x.TStart <= adjustedcurrenttime && adjustedcurrenttime <= x.TEnd);
             if (sub != null)
             {
                 if (_currentContents != sub.Contents)
@@ -125,12 +125,13 @@ namespace BearSubPlayer
                 Reset();
         }
 
-        private void Reset()
+        private void Reset(bool isPartial = false)
         {
             _stopWatch.Reset();
             _mainWin.Dispatcher.Invoke(() =>
             {
-                _mainWin.SubLabel.Content = "Double click there to select a srt file";
+                if (!isPartial)
+                    _mainWin.SubLabel.Content = "Double click there to select a srt file";
                 _mainWin.TimeSld.Value = 0;
                 _mainWin.TimeLb.Content = "00:00:00 / 00:00:00";
                 PlayWidget(false);
@@ -141,62 +142,59 @@ namespace BearSubPlayer
 
         public async Task LoadFileAsync(string path)
         {
-            Reset();
-            var readfile = await ReadSrtAsync(path);
-            if (readfile)
+            Reset(isPartial: true);
+            try
             {
+                await Task.Run(() => ReadSrt(path));
+                var filename = Path.GetFileName(path);
                 _mainWin.Dispatcher.Invoke(() =>
                 {
-                    _mainWin.SubLabel.Content = Path.GetFileName(path) + " is loaded";
+                    if (filename.Length > 35)
+                        _mainWin.SubLabel.Content = filename.Substring(0, 35) + "... is loaded";
+                    else
+                        _mainWin.SubLabel.Content = filename + " is loaded";
                     _mainWin.TimeLb.Content = $"00:00:00 / {_totalTime:hh\\:mm\\:ss}";
                     PlayWidget(true);
                 });
             }
-            else
-                _mainWin.Dispatcher.Invoke(() => _mainWin.SubLabel.Content = "An invalid srt file, please try again");
-        }
-
-        private async Task<bool> ReadSrtAsync(string path)
-        {
-            try
-            {
-                using var reader = new StreamReader(path);
-                var tempstr = "";
-                while (!reader.EndOfStream)
-                {
-                    var line = await reader.ReadLineAsync();
-                    if (line == "" && tempstr != "")   // The end of one subtitle
-                    {
-                        var subinfo = new SubInfo();
-                        var splited = tempstr.Split("\n");
-                        var time = splited[1].Split(" --> ");    // Second line is time info
-                        subinfo.TStart = TimeSpan.Parse(time[0].Replace(',', '.'));
-                        subinfo.TEnd = TimeSpan.Parse(time[1].Replace(',', '.'));
-
-                        for (var i = 2; i < splited.Length; i++)  // Third line to second last line is subtitle info
-                        {
-                            var contents = Regex.Replace(splited[i], @"<.*?>", "");
-                            contents = Regex.Replace(contents, @"{.*?}", "");
-                            subinfo.Contents += contents;
-                            if (i < splited.Length - 2)
-                                subinfo.Contents += "\n";
-                        }
-
-                        _subList.Add(subinfo);
-                        tempstr = "";
-                    }
-                    else
-                    {
-                        tempstr += line + "\n";
-                    }
-                }
-                _totalTime = _subList[^1].TEnd;    // [^1]  C# 8.0
-                return true;
-            }
             catch
             {
-                return false;
+                _mainWin.Dispatcher.Invoke(() => _mainWin.SubLabel.Content = "An invalid srt file, please try again");
             }
+        }
+
+        private void ReadSrt(string path)
+        {
+            using var reader = new StreamReader(path);
+            var templines = new List<string>();
+            while (!reader.EndOfStream)
+            {
+                var line = reader.ReadLine();
+                if (line == "" && templines.Count != 0)   // The end of one subtitle
+                {
+                    var subinfo = new SubInfo();
+                    var time = templines[1].Split(" --> ");    // Second line is time info
+                    subinfo.TStart = TimeSpan.Parse(time[0].Replace(',', '.'));
+                    subinfo.TEnd = TimeSpan.Parse(time[1].Replace(',', '.'));
+
+                    for (var i = 2; i < templines.Count; i++)  // Third line to the last line is subtitle info
+                    {
+                        var contents = Regex.Replace(templines[i], @"<.*?>", "");
+                        contents = Regex.Replace(contents, @"{.*?}", "");
+                        subinfo.Contents += contents;
+                        if (i < templines.Count - 1)
+                            subinfo.Contents += "\n";
+                    }
+
+                    _subList.Add(subinfo);
+                    templines.Clear();
+                }
+                else
+                {
+                    templines.Add(line);
+                }
+            }
+            _totalTime = _subList[^1].TEnd;    // [^1]  C# 8.0
         }
 
         private void PlayWidget(bool isenabled)

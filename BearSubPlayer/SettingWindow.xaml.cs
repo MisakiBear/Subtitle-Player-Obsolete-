@@ -19,7 +19,7 @@ namespace BearSubPlayer
             // Events that relate to change the controls should be hooked after the window initialized
             OpacitySld.ValueChanged += OpacitySld_ValueChanged;
             FontSizeSld.ValueChanged += FontSizeSld_ValueChanged;
-            FontWhiteRBtn.Checked+= Font_Changed;
+            FontWhiteRBtn.Checked += Font_Changed;
             FontBlackRBtn.Checked += Font_Changed;
             FontShadowOpacitySld.ValueChanged += Font_Changed;
             FontShadowSoftnessSld.ValueChanged += Font_Changed;
@@ -48,10 +48,10 @@ namespace BearSubPlayer
 
         private void Font_Changed(object sender, EventArgs e)
         {
-            FontShadowOpacityLb.Content = (int) (FontShadowOpacitySld.Value* 100); // Change float to %
-            FontShadowSoftnessLb.Content = (int) FontShadowSoftnessSld.Value;
+            FontShadowOpacityLb.Content = (int)(FontShadowOpacitySld.Value * 100); // Change float to %
+            FontShadowSoftnessLb.Content = (int)FontShadowSoftnessSld.Value;
 
-            if ((bool) FontWhiteRBtn.IsChecked)
+            if ((bool)FontWhiteRBtn.IsChecked)
                 ArrHelper.ChangeFontEffect(Brushes.White, Colors.White, FontShadowOpacitySld.Value, FontShadowSoftnessSld.Value);
             else
                 ArrHelper.ChangeFontEffect(Brushes.Black, Colors.Black, FontShadowOpacitySld.Value, FontShadowSoftnessSld.Value);

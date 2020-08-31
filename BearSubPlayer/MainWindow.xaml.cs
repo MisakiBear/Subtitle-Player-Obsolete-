@@ -74,7 +74,7 @@ namespace BearSubPlayer
         }
 
         private async void PlayLb_MouseDown(object sender, MouseButtonEventArgs e)
-            => await _core.Play();
+            => await _core.PlayAsync();
 
         private void TimeSld_MouseMove(object sender, MouseEventArgs e)
             => _core.TimeSldChanged();
