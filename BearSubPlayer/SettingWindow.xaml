@@ -15,7 +15,8 @@
         <StackPanel Orientation="Horizontal" HorizontalAlignment="Center" Margin="0,22,0,253">
             <Label Content="Opacity" Width="60" Height="20" Padding="0,0,0,0" FontSize="14"/>
             <Slider x:Name="OpacitySld" Width="197" Height="18"
-                    Maximum="1" LargeChange="0.1" SmallChange="0.01" Value="0.5"/>
+                    Maximum="1" LargeChange="0.1" SmallChange="0.01" Value="0.5"
+                    ValueChanged="Main_Changed"/>
             <Label x:Name="OpacityLb" Content="50"
                    Height="20" Width="25" Padding="0,0,0,0"
                    HorizontalContentAlignment="Right"
@@ -27,16 +28,17 @@
                          Height="20"  Width="70"
                          VerticalContentAlignment="Center"
                          IsChecked="True"
-                         Checked="WhiteRBtn_Checked"/>
+                         Checked="Main_Changed"/>
             <RadioButton x:Name="BlackRBtn" Content="Black"
                          Height="20"  Width="70"
                          VerticalContentAlignment="Center"
-                         Checked="BlackRBtn_Checked"/>
+                         Checked="Main_Changed"/>
         </StackPanel>
         <StackPanel Orientation="Horizontal" HorizontalAlignment="Center" Margin="0,82,0,195">
             <Label Content="FontSize" Width="60" Height="20" Padding="0,0,0,0" FontSize="14"/>
             <Slider x:Name="FontSizeSld" Width="197" Height="18"
-                    Maximum="46" LargeChange="6" SmallChange="1" Value="32" Minimum="12"/>
+                    Maximum="46" LargeChange="6" SmallChange="1" Value="32" Minimum="12"
+                    ValueChanged="Font_Changed"/>
             <Label x:Name="FontSizeLb" Content="32"
                    Width="25" Height="20" Padding="0,0,0,0"
                    HorizontalContentAlignment="Right"
@@ -47,10 +49,12 @@
             <RadioButton x:Name="FontWhiteRBtn" Content="White" 
                          Height="20"  Width="70" 
                          VerticalContentAlignment="Center" 
-                         IsChecked="True"/>
+                         IsChecked="True"
+                         Checked="Font_Changed"/>
             <RadioButton x:Name="FontBlackRBtn" Content="Black" 
                          Height="20"  Width="70" 
-                         VerticalContentAlignment="Center"/>
+                         VerticalContentAlignment="Center"
+                         Checked="Font_Changed"/>
         </StackPanel>
         <StackPanel Orientation="Horizontal" HorizontalAlignment="Center" Margin="0,173,0,141">
             <Label Content="- Font Shadow -" Height="20" Padding="0,0,0,0" FontSize="14"/>
@@ -58,7 +62,8 @@
         <StackPanel Orientation="Horizontal" HorizontalAlignment="Center" Margin="0,201,0,112">
             <Label Content="Opacity" Width="60" Height="20" Padding="0,0,0,0" FontSize="14"/>
             <Slider x:Name="FontShadowOpacitySld" Width="197" Height="18"
-                    Maximum="1" LargeChange="0.1" SmallChange="0.01" Value="0.5"/>
+                    Maximum="1" LargeChange="0.1" SmallChange="0.01" Value="0.5"
+                    ValueChanged="Font_Changed"/>
             <Label x:Name="FontShadowOpacityLb" Content="50"
                    Width="25" Height="20" Padding="0,0,0,0"
                    HorizontalContentAlignment="Right"
@@ -67,7 +72,8 @@
         <StackPanel Orientation="Horizontal" HorizontalAlignment="Center" Margin="0,238,0,70">
             <Label Content="Softness" Width="60" Height="20" Padding="0,0,0,0" FontSize="14"/>
             <Slider x:Name="FontShadowSoftnessSld" Width="197"  Height="18"
-                    Maximum="15" Value="8" Minimum="5"/>
+                    Maximum="15" Value="8" Minimum="5"
+                    ValueChanged="Font_Changed"/>
             <Label x:Name="FontShadowSoftnessLb" Content="8"
                    Width="25" Height="20" Padding="0,0,0,0"
                    HorizontalContentAlignment="Right"

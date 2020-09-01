@@ -15,58 +15,102 @@ namespace BearSubPlayer
         {
             InitializeComponent();
             Initialize();
-
-            // Events that relate to change the controls should be hooked after the window initialized
-            OpacitySld.ValueChanged += OpacitySld_ValueChanged;
-            FontSizeSld.ValueChanged += FontSizeSld_ValueChanged;
-            FontWhiteRBtn.Checked += Font_Changed;
-            FontBlackRBtn.Checked += Font_Changed;
-            FontShadowOpacitySld.ValueChanged += Font_Changed;
-            FontShadowSoftnessSld.ValueChanged += Font_Changed;
         }
 
-        private void OpacitySld_ValueChanged(object sender, EventArgs e)
+        private void Initialize()
         {
-            OpacityLb.Content = (int)(OpacitySld.Value * 100);  // Change float to %
-            if ((bool)WhiteRBtn.IsChecked)
-                ArrHelper.ChangeBackground(Brushes.Black, Colors.White, OpacitySld.Value);
+            var config = new Config();
+
+            OpacitySld.Value = config.MainOp;
+            OpacityLb.Content = (int)(config.MainOp * 100);
+
+            if (config.MainCol == 0)  // White
+                WhiteRBtn.IsChecked = true;
             else
-                ArrHelper.ChangeBackground(Brushes.White, Colors.Black, OpacitySld.Value);
-        }
+                BlackRBtn.IsChecked = true;
 
-        private void WhiteRBtn_Checked(object sender, RoutedEventArgs e)
-            => ArrHelper.ChangeBackground(Brushes.Black, Colors.White, OpacitySld.Value);
+            FontSizeSld.Value = config.FontSize;
+            FontSizeLb.Content = config.FontSize;
 
-        private void BlackRBtn_Checked(object sender, RoutedEventArgs e)
-            => ArrHelper.ChangeBackground(Brushes.White, Colors.Black, OpacitySld.Value);
-
-        private void FontSizeSld_ValueChanged(object sender, EventArgs e)
-        {
-            FontSizeLb.Content = (int)FontSizeSld.Value;
-            ArrHelper.ChangeFontSize(FontSizeSld.Value);
-        }
-
-        private void Font_Changed(object sender, EventArgs e)
-        {
-            FontShadowOpacityLb.Content = (int)(FontShadowOpacitySld.Value * 100); // Change float to %
-            FontShadowSoftnessLb.Content = (int)FontShadowSoftnessSld.Value;
-
-            if ((bool)FontWhiteRBtn.IsChecked)
-                ArrHelper.ChangeFontEffect(Brushes.White, Colors.White, FontShadowOpacitySld.Value, FontShadowSoftnessSld.Value);
+            if (config.FontCol == 0)  // White
+                FontWhiteRBtn.IsChecked = true;
             else
-                ArrHelper.ChangeFontEffect(Brushes.Black, Colors.Black, FontShadowOpacitySld.Value, FontShadowSoftnessSld.Value);
+                FontBlackRBtn.IsChecked = true;
+
+            FontShadowOpacitySld.Value = config.FontOp;
+            FontShadowOpacityLb.Content = (int)(config.FontOp * 100);
+            FontShadowSoftnessSld.Value = config.FontSn;
+            FontShadowSoftnessLb.Content = config.FontSn;
+        }
+
+        private void Main_Changed(object sender, RoutedPropertyChangedEventArgs<double> e)
+        {
+            if (this.IsInitialized)
+            {
+                OpacityLb.Content = (int)(OpacitySld.Value * 100);  // Change float to %
+                if ((bool)WhiteRBtn.IsChecked)
+                    ArrHandler.Serv.MainBackground(Brushes.Black, Colors.White, OpacitySld.Value);
+                else
+                    ArrHandler.Serv.MainBackground(Brushes.White, Colors.Black, OpacitySld.Value);
+            }
+        }
+
+        private void Main_Changed(object sender, RoutedEventArgs e)
+        {
+            if (this.IsInitialized)
+            {
+                OpacityLb.Content = (int)(OpacitySld.Value * 100);  // Change float to %
+                if ((bool)WhiteRBtn.IsChecked)
+                    ArrHandler.Serv.MainBackground(Brushes.Black, Colors.White, OpacitySld.Value);
+                else
+                    ArrHandler.Serv.MainBackground(Brushes.White, Colors.Black, OpacitySld.Value);
+            }
+        }
+
+        private void Font_Changed(object sender, RoutedPropertyChangedEventArgs<double> e)
+        {
+            if (this.IsInitialized)
+            {
+                FontSizeLb.Content = (int)FontSizeSld.Value;
+                FontShadowOpacityLb.Content = (int)(FontShadowOpacitySld.Value * 100); // Change float to %
+                FontShadowSoftnessLb.Content = (int)FontShadowSoftnessSld.Value;
+
+                if ((bool)FontWhiteRBtn.IsChecked)
+                    ArrHandler.Serv.FontEffect(Brushes.White, Colors.White, FontShadowOpacitySld.Value,
+                        FontShadowSoftnessSld.Value, FontSizeSld.Value);
+                else
+                    ArrHandler.Serv.FontEffect(Brushes.Black, Colors.Black, FontShadowOpacitySld.Value,
+                        FontShadowSoftnessSld.Value, FontSizeSld.Value);
+            }
+        }
+
+        private void Font_Changed(object sender, RoutedEventArgs e)
+        {
+            if (this.IsInitialized)
+            {
+                FontSizeLb.Content = (int)FontSizeSld.Value;
+                FontShadowOpacityLb.Content = (int)(FontShadowOpacitySld.Value * 100); // Change float to %
+                FontShadowSoftnessLb.Content = (int)FontShadowSoftnessSld.Value;
+
+                if ((bool)FontWhiteRBtn.IsChecked)
+                    ArrHandler.Serv.FontEffect(Brushes.White, Colors.White, FontShadowOpacitySld.Value,
+                        FontShadowSoftnessSld.Value, FontSizeSld.Value);
+                else
+                    ArrHandler.Serv.FontEffect(Brushes.Black, Colors.Black, FontShadowOpacitySld.Value,
+                        FontShadowSoftnessSld.Value, FontSizeSld.Value);
+            }
         }
 
         private void ExitBtn_Click(object sender, RoutedEventArgs e)
         {
             this.Close();
-            Environment.Exit(0);
+            Application.Current.Shutdown();
         }
 
         private void SetDefaultBtn_Click(object sender, RoutedEventArgs e)
         {
             new Config().SetDefault();
-            ArrHelper.MainInitialize();
+            ArrHandler.Serv.MainInitialize();
             Initialize();
         }
 
@@ -80,6 +124,29 @@ namespace BearSubPlayer
         {
             Save();
             IsOpened = false;
+        }
+
+        private void Save()
+        {
+            var config = new Config
+            {
+                MainOp = Math.Round(OpacitySld.Value * 100) / 100,  // Round the number
+                FontSize = (int)FontSizeSld.Value,
+                FontOp = Math.Round(FontShadowOpacitySld.Value * 100) / 100,
+                FontSn = (int)FontShadowSoftnessSld.Value,
+            };
+
+            if ((bool)WhiteRBtn.IsChecked)  // White
+                config.MainCol = 0;
+            else
+                config.MainCol = 1;
+
+            if ((bool)FontWhiteRBtn.IsChecked)  // White
+                config.FontCol = 0;
+            else
+                config.FontCol = 1;
+
+            config.Save();
         }
     }
 }

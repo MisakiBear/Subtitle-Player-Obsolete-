@@ -12,10 +12,9 @@ namespace BearSubPlayer
 {
     public class Core
     {
-        private readonly List<SubInfo> _subList = new List<SubInfo>();
+        private List<SubInfo> _subList;
         private readonly Stopwatch _stopWatch = new Stopwatch();
         private readonly System.Timers.Timer _timer = new System.Timers.Timer(50);
-        private readonly MainWindow _mainWin = MainWindow.SelfAccess;
         private TimeSpan _totalTime = new TimeSpan();
         private TimeSpan _adjustTime = new TimeSpan();
         private TimeSpan _baseTime = new TimeSpan();
@@ -28,37 +27,35 @@ namespace BearSubPlayer
         {
             if (!_stopWatch.IsRunning)
             {
-                PlayWidget(false);  // Lock the play widget
+                ArrHandler.Serv.SubLabel(false);  // The file can be loaded only the player isn't playing
+                ArrHandler.Serv.PlayWidgets(false);  // Lock the play widget
 
                 var countdown = "";
                 for (var i = 3; i >= 1; i--)
                 {
                     countdown += $"{i}...";
-                    _mainWin.Dispatcher.Invoke(() => _mainWin.SubLabel.Content = countdown);
-                    await Task.Run(() => Thread.Sleep(1000));
+                    ArrHandler.Serv.SubLabel(countdown);
+                    await Task.Delay(1000);
                 }
 
-                PlayWidget(true);
+                ArrHandler.Serv.PlayWidgets(true);
 
-                _mainWin.SubLabel.Content = _currentContents;
+                ArrHandler.Serv.SubLabel(_currentContents);
 
-                _mainWin.SubLabel.IsEnabled = false;  // The file can be loaded only the player isn't playing
                 _stopWatch.Start();
                 _timer.Start();
             }
         }
 
-        public void TimeSldChanged()
+        public void TimeSldChanged(double timesldvalue)
         {
-            if (!_mainWin.TimeSld.IsMouseCaptureWithin) return;
-
             if (_stopWatch.IsRunning)
                 _stopWatch.Restart();
             else
                 _stopWatch.Reset();
 
             var adjustedtotaltime = _totalTime - _adjustTime;
-            var basetime = (int)(_mainWin.TimeSld.Value * adjustedtotaltime.TotalMilliseconds / 100);
+            var basetime = (int)(timesldvalue * adjustedtotaltime.TotalMilliseconds / 100);
             _baseTime = new TimeSpan(0, 0, 0, 0, basetime);
             TimeObserver();
         }
@@ -81,13 +78,13 @@ namespace BearSubPlayer
         {
             _timer.Stop();
             _stopWatch.Stop();
-            _mainWin.SubLabel.IsEnabled = true;
+            ArrHandler.Serv.SubLabel(true);
         }
 
         public void Stop()
         {
             Reset();
-            _mainWin.SubLabel.IsEnabled = true;
+            ArrHandler.Serv.SubLabel(true);
         }
 
         private void TimeObserver(object sender = null, ElapsedEventArgs e = null)
@@ -101,7 +98,7 @@ namespace BearSubPlayer
             {
                 if (_currentContents != sub.Contents)
                 {
-                    _mainWin.Dispatcher.Invoke(() => _mainWin.SubLabel.Content = sub.Contents);
+                    ArrHandler.Serv.SubLabel(sub.Contents);
                     _currentContents = sub.Contents;
                 }
             }
@@ -109,102 +106,45 @@ namespace BearSubPlayer
             {
                 if (_currentContents != "")
                 {
-                    _mainWin.Dispatcher.Invoke(() => _mainWin.SubLabel.Content = "");
+                    ArrHandler.Serv.SubLabel("");
                     _currentContents = "";
                 }
             }
 
-            _mainWin.Dispatcher.Invoke(() =>
-            {
-                _mainWin.TimeLb.Content = $"{currenttime:hh\\:mm\\:ss} / {adjustedtotaltime:hh\\:mm\\:ss}";
-                if (!_mainWin.TimeSld.IsMouseCaptureWithin)
-                    _mainWin.TimeSld.Value = currenttime.TotalMilliseconds / adjustedtotaltime.TotalMilliseconds * 100;
-            });
+            ArrHandler.Serv.TimeLb($"{currenttime:hh\\:mm\\:ss} / {adjustedtotaltime:hh\\:mm\\:ss}");
+            ArrHandler.Serv.TimeSld(currenttime.TotalMilliseconds / adjustedtotaltime.TotalMilliseconds * 100);
 
             if (currenttime >= adjustedtotaltime)
-                Reset();
+                Reset(true);
         }
 
-        private void Reset(bool isPartial = false)
+        private void Reset(bool ispartial = false)
         {
             _stopWatch.Reset();
-            _mainWin.Dispatcher.Invoke(() =>
-            {
-                if (!isPartial)
-                    _mainWin.SubLabel.Content = "Double click there to select a srt file";
-                _mainWin.TimeSld.Value = 0;
-                _mainWin.TimeLb.Content = "00:00:00 / 00:00:00";
-                PlayWidget(false);
-                _mainWin.SubLabel.IsEnabled = true;
-            });
+            ArrHandler.Serv.MainReset(ispartial);
             _timer.Stop();
         }
 
         public async Task LoadFileAsync(string path)
         {
-            Reset(isPartial: true);
+            Reset(true);
             try
             {
-                await Task.Run(() => ReadSrt(path));
+                _subList = await Task.Run(() => new SubReader(path).ReadSrt());
+                _totalTime = _subList[^1].TEnd;    // [^1]  C# 8.0
                 var filename = Path.GetFileName(path);
-                _mainWin.Dispatcher.Invoke(() =>
-                {
-                    if (filename.Length > 35)
-                        _mainWin.SubLabel.Content = filename.Substring(0, 35) + "... is loaded";
-                    else
-                        _mainWin.SubLabel.Content = filename + " is loaded";
-                    _mainWin.TimeLb.Content = $"00:00:00 / {_totalTime:hh\\:mm\\:ss}";
-                    PlayWidget(true);
-                });
+
+                if (filename.Length > 35)
+                    ArrHandler.Serv.SubLabel(filename.Substring(0, 35) + "... is loaded");
+                else
+                    ArrHandler.Serv.SubLabel(filename + " is loaded");
+                ArrHandler.Serv.TimeLb($"00:00:00 / {_totalTime:hh\\:mm\\:ss}");
+                ArrHandler.Serv.PlayWidgets(true);
             }
             catch
             {
-                _mainWin.Dispatcher.Invoke(() => _mainWin.SubLabel.Content = "An invalid srt file, please try again");
+                ArrHandler.Serv.SubLabel("An invalid srt file, please try again");
             }
-        }
-
-        private void ReadSrt(string path)
-        {
-            using var reader = new StreamReader(path);
-            var templines = new List<string>();
-            while (!reader.EndOfStream)
-            {
-                var line = reader.ReadLine();
-                if (line == "" && templines.Count != 0)   // The end of one subtitle
-                {
-                    var subinfo = new SubInfo();
-                    var time = templines[1].Split(" --> ");    // Second line is time info
-                    subinfo.TStart = TimeSpan.Parse(time[0].Replace(',', '.'));
-                    subinfo.TEnd = TimeSpan.Parse(time[1].Replace(',', '.'));
-
-                    for (var i = 2; i < templines.Count; i++)  // Third line to the last line is subtitle info
-                    {
-                        var contents = Regex.Replace(templines[i], @"<.*?>", "");
-                        contents = Regex.Replace(contents, @"{.*?}", "");
-                        subinfo.Contents += contents;
-                        if (i < templines.Count - 1)
-                            subinfo.Contents += "\n";
-                    }
-
-                    _subList.Add(subinfo);
-                    templines.Clear();
-                }
-                else
-                {
-                    templines.Add(line);
-                }
-            }
-            _totalTime = _subList[^1].TEnd;    // [^1]  C# 8.0
-        }
-
-        private void PlayWidget(bool isenabled)
-        {
-            _mainWin.PlayLb.IsEnabled = isenabled;
-            _mainWin.BackwardLb.IsEnabled = isenabled;
-            _mainWin.ForwardLb.IsEnabled = isenabled;
-            _mainWin.PauseLb.IsEnabled = isenabled;
-            _mainWin.StopLb.IsEnabled = isenabled;
-            _mainWin.TimeSld.IsEnabled = isenabled;
         }
     }
 }

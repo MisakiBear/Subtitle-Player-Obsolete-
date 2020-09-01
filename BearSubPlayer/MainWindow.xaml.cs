@@ -14,7 +14,6 @@ namespace BearSubPlayer
     /// </summary>
     public partial class MainWindow : Window
     {
-        public static MainWindow SelfAccess { get; private set; }
         private Core _core;
         private bool _isActive;
         private Brush _currentBrush;
@@ -22,8 +21,6 @@ namespace BearSubPlayer
         public MainWindow()
         {
             InitializeComponent();
-
-            SelfAccess = this;
 
             // MainWindow
             this.Width = SystemParameters.PrimaryScreenWidth * 2 / 3;
@@ -35,7 +32,17 @@ namespace BearSubPlayer
             MenuPanel.Margin = new Thickness(marginleft, 0, 0, 0);
 
             // Arrange
-            ArrHelper.MainInitialize();
+            MainInitialize();
+            ArrHandler.Serv.BackgroundChangeReq += MainBackground;
+            ArrHandler.Serv.FontEffectChangeReq += FontEffect;
+            ArrHandler.Serv.MainInitializeReq += MainInitialize;
+
+            ArrHandler.Serv.SubLbContentsChangeReq += SubLbContents;
+            ArrHandler.Serv.SubLbIsEnableChangeReq += SubLbIsEnabled;
+            ArrHandler.Serv.TimeLbChangeReq += TimeLbContents;
+            ArrHandler.Serv.TimeSldChangeReq += TimeSldValue;
+            ArrHandler.Serv.PlayWidgetsChangeReq += PlayWidgetControl;
+            ArrHandler.Serv.MainResetReq += MainReset;
         }
 
         private void Main_MouseDown(object sender, MouseButtonEventArgs e)
@@ -47,7 +54,7 @@ namespace BearSubPlayer
         private async void Main_MouseLeave(object sender, MouseEventArgs e)
         {
             _isActive = false;
-            await Task.Run(() => Thread.Sleep(3000));
+            await Task.Delay(3000);
             if (!_isActive)
                 MenuPanel.Visibility = Visibility.Hidden;
         }
@@ -77,7 +84,10 @@ namespace BearSubPlayer
             => await _core.PlayAsync();
 
         private void TimeSld_MouseMove(object sender, MouseEventArgs e)
-            => _core.TimeSldChanged();
+        {
+            if (TimeSld.IsMouseCaptureWithin)
+                _core.TimeSldChanged(TimeSld.Value);
+        }
 
         private void BackWardLb_MouseDown(object sender, MouseButtonEventArgs e)
             => _core.Backward();
