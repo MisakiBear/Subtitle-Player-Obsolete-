@@ -111,11 +111,13 @@ namespace BearSubPlayer
                 }
             }
 
-            ArrHandler.Serv.TimeLb($"{currenttime:hh\\:mm\\:ss} / {adjustedtotaltime:hh\\:mm\\:ss}");
-            ArrHandler.Serv.TimeSld(currenttime.TotalMilliseconds / adjustedtotaltime.TotalMilliseconds * 100);
-
             if (currenttime >= adjustedtotaltime)
-                Reset(true);
+                Reset();
+            else
+            {
+                ArrHandler.Serv.TimeLb($"{currenttime:hh\\:mm\\:ss} / {adjustedtotaltime:hh\\:mm\\:ss}");
+                ArrHandler.Serv.TimeSld(currenttime.TotalMilliseconds / adjustedtotaltime.TotalMilliseconds * 100);
+            }
         }
 
         private void Reset(bool ispartial = false)
@@ -127,7 +129,7 @@ namespace BearSubPlayer
 
         public async Task LoadFileAsync(string path)
         {
-            Reset(true);
+            Reset(ispartial: true);
             try
             {
                 _subList = await Task.Run(() => new SubReader(path).ReadSrt());

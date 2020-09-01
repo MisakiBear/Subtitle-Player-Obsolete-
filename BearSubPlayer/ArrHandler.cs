@@ -169,9 +169,9 @@ namespace BearSubPlayer
         {
             if (!ispartial)
                 SubLabel.Content = "Double click there to select a srt file";
+            PlayWidgetControl(false);
             TimeSld.Value = 0;
             TimeLb.Content = "00:00:00 / 00:00:00";
-            PlayWidgetControl(false);
             SubLbIsEnabled(true);
         }
     }
