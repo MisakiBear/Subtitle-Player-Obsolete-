@@ -3,8 +3,6 @@ using System.Collections.Generic;
 using System.Diagnostics;
 using System.IO;
 using System.Linq;
-using System.Text.RegularExpressions;
-using System.Threading;
 using System.Threading.Tasks;
 using System.Timers;
 
@@ -111,7 +109,7 @@ namespace BearSubPlayer
                 }
             }
 
-            if (currenttime >= adjustedtotaltime)
+            if (currenttime >= adjustedtotaltime && _timer.Enabled)
                 Reset();
             else
             {

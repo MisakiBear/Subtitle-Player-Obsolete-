@@ -1,8 +1,4 @@
 ﻿using System;
-using System.Diagnostics.Contracts;
-using System.Diagnostics.Tracing;
-using System.Reflection.Metadata.Ecma335;
-using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Media;
 using System.Windows.Media.Effects;
@@ -95,18 +91,21 @@ namespace BearSubPlayer
         {
             Background = new SolidColorBrush(e.BackgroundColor);
 
-            if (e.Opacity <= 0.002)
-                Background.Opacity = 0.002;    // Almost transparent
-            else
-                Background.Opacity = e.Opacity;
+            this.InvokeIfNeeded(() =>
+            {
+                if (e.Opacity <= 0.002)
+                    Background.Opacity = 0.002;    // Almost transparent
+                else
+                    Background.Opacity = e.Opacity;
 
-            TimeLb.Foreground = e.FontBrush;
-            PlayLb.Foreground = e.FontBrush;
-            BackwardLb.Foreground = e.FontBrush;
-            ForwardLb.Foreground = e.FontBrush;
-            PauseLb.Foreground = e.FontBrush;
-            StopLb.Foreground = e.FontBrush;
-            SettingLb.Foreground = e.FontBrush;
+                TimeLb.Foreground = e.FontBrush;
+                PlayLb.Foreground = e.FontBrush;
+                BackwardLb.Foreground = e.FontBrush;
+                ForwardLb.Foreground = e.FontBrush;
+                PauseLb.Foreground = e.FontBrush;
+                StopLb.Foreground = e.FontBrush;
+                SettingLb.Foreground = e.FontBrush;
+            });
         }
 
         private void FontEffect(FontEffectEventArgs e)
@@ -121,8 +120,12 @@ namespace BearSubPlayer
                 Opacity = e.Opacity,
                 BlurRadius = e.Softness
             };
-            SubLabel.Effect = effect;
-            SubLabel.FontSize = e.FontSize;
+
+            this.InvokeIfNeeded(() =>
+            {
+                SubLabel.Effect = effect;
+                SubLabel.FontSize = e.FontSize;
+            });
         }
 
         private void MainInitialize(EventArgs e = null)
@@ -141,37 +144,40 @@ namespace BearSubPlayer
         }
 
         private void SubLbContents(string contents)
-            => Dispatcher.Invoke(() => SubLabel.Content = contents);
+            => this.InvokeIfNeeded(() => SubLabel.Content = contents);
 
         private void SubLbIsEnabled(bool isenabled)
-            => SubLabel.IsEnabled = isenabled;
+            => this.InvokeIfNeeded(() => SubLabel.IsEnabled = isenabled);
 
         private void TimeLbContents(string time)
-            => Dispatcher.Invoke(() => TimeLb.Content = time);
+            => this.InvokeIfNeeded(() => TimeLb.Content = time);
 
         private void TimeSldValue(double value)
         {
             if (!TimeSld.IsMouseCaptureWithin)
-                Dispatcher.Invoke(() => TimeSld.Value = value);
+                this.InvokeIfNeeded(() => TimeSld.Value = value);
         }
 
         private void PlayWidgetControl(bool isenabled)
         {
-            PlayLb.IsEnabled = isenabled;
-            BackwardLb.IsEnabled = isenabled;
-            ForwardLb.IsEnabled = isenabled;
-            PauseLb.IsEnabled = isenabled;
-            StopLb.IsEnabled = isenabled;
-            TimeSld.IsEnabled = isenabled;
+            this.InvokeIfNeeded(() =>
+            {
+                PlayLb.IsEnabled = isenabled;
+                BackwardLb.IsEnabled = isenabled;
+                ForwardLb.IsEnabled = isenabled;
+                PauseLb.IsEnabled = isenabled;
+                StopLb.IsEnabled = isenabled;
+                TimeSld.IsEnabled = isenabled;
+            });
         }
 
         private void MainReset(bool ispartial)
         {
             if (!ispartial)
-                SubLabel.Content = "Double click there to select a srt file";
+                SubLbContents("Double click there to select a srt file");
             PlayWidgetControl(false);
-            TimeSld.Value = 0;
-            TimeLb.Content = "00:00:00 / 00:00:00";
+            TimeSldValue(0);
+            TimeLbContents("00:00:00 / 00:00:00");
             SubLbIsEnabled(true);
         }
     }

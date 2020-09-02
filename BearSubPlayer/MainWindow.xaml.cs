@@ -1,5 +1,4 @@
 ﻿using System;
-using System.Threading;
 using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Controls;
@@ -67,8 +66,6 @@ namespace BearSubPlayer
 
         private async void SubLabel_MouseDoubleClick(object sender, MouseButtonEventArgs e)
         {
-            _core = new Core();
-
             var dlg = new OpenFileDialog
             {
                 DefaultExt = ".srt", // Default file extension
@@ -77,7 +74,10 @@ namespace BearSubPlayer
 
             var result = dlg.ShowDialog();
             if ((bool)result)
+            {
+                _core = new Core();
                 await _core.LoadFileAsync(dlg.FileName);
+            }
         }
 
         private async void PlayLb_MouseDown(object sender, MouseButtonEventArgs e)
