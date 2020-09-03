@@ -1,4 +1,4 @@
-using System;
+﻿using System;
 using System.Windows;
 using System.Windows.Media;
 
@@ -44,12 +44,18 @@ namespace BearSubPlayer
         }
 
         private void Main_Changed(object sender, RoutedPropertyChangedEventArgs<double> e)
-            => Main_Changed();
+        {
+            if (this.IsInitialized)
+            {
+                OpacityLb.Content = (int)(OpacitySld.Value * 100);  // Change float to %
+                if ((bool)WhiteRBtn.IsChecked)
+                    ArrHandler.Serv.MainBackground(Brushes.Black, Colors.White, OpacitySld.Value);
+                else
+                    ArrHandler.Serv.MainBackground(Brushes.White, Colors.Black, OpacitySld.Value);
+            }
+        }
 
         private void Main_Changed(object sender, RoutedEventArgs e)
-            => Main_Changed();
-
-        private void Main_Changed()
         {
             if (this.IsInitialized)
             {
@@ -62,12 +68,23 @@ namespace BearSubPlayer
         }
 
         private void Font_Changed(object sender, RoutedPropertyChangedEventArgs<double> e)
-            => Font_Changed();
+        {
+            if (this.IsInitialized)
+            {
+                FontSizeLb.Content = (int)FontSizeSld.Value;
+                FontShadowOpacityLb.Content = (int)(FontShadowOpacitySld.Value * 100); // Change float to %
+                FontShadowSoftnessLb.Content = (int)FontShadowSoftnessSld.Value;
+
+                if ((bool)FontWhiteRBtn.IsChecked)
+                    ArrHandler.Serv.FontEffect(Brushes.White, Colors.White, FontShadowOpacitySld.Value,
+                        FontShadowSoftnessSld.Value, FontSizeSld.Value);
+                else
+                    ArrHandler.Serv.FontEffect(Brushes.Black, Colors.Black, FontShadowOpacitySld.Value,
+                        FontShadowSoftnessSld.Value, FontSizeSld.Value);
+            }
+        }
 
         private void Font_Changed(object sender, RoutedEventArgs e)
-            => Font_Changed();
-
-        private void Font_Changed()
         {
             if (this.IsInitialized)
             {
@@ -133,3 +150,4 @@ namespace BearSubPlayer
         }
     }
 }
+
