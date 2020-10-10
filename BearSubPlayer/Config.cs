@@ -1,7 +1,5 @@
 ﻿using System;
-using System.IO;
-using System.Linq;
-using System.Xml.Linq;
+using ConfReaderLib;
 
 namespace BearSubPlayer
 {
@@ -13,6 +11,15 @@ namespace BearSubPlayer
         public int FontCol { get; set; }
         public double FontOp { get; set; }
         public int FontSn { get; set; }
+
+        private static readonly (string, string, string)[] _defaultconfig = new[] {
+            ("mainop", "0.5", "value=\"0-1\"") ,
+            ("maincol", "0", "value=\"white=0, black=1\""),
+            ("fontsize", "32", "value=\"12-46\""),
+            ("fontcol", "0", "value=\"white=0, black=1\""),
+            ("fontop", "0.5", "value=\"0-1\""),
+            ("fontsn", "8", "value=\"5-15\"")
+        };
 
         public Config()
         {
@@ -37,60 +44,39 @@ namespace BearSubPlayer
 
         public void SetDefault()
         {
-            using var writer = new StreamWriter(Path.Combine(Environment.CurrentDirectory, "config.xml"));
-            writer.Write(_defaultconfig);
+            ConfReader.Create(_defaultconfig, "config.conf");
         }
 
         private void Load()
         {
-            var xdoc = XDocument.Load(Path.Combine(Environment.CurrentDirectory, "config.xml"));
-            var pairs = xdoc.Root.Elements()
-                .Select(x => new
-                {
-                    Key = x.Name.LocalName,
-                    Value = x.Value,
-                });
-            var dict = pairs.ToDictionary(x => x.Key, x => x.Value);
 
-            MainOp = double.Parse(dict["mainop"]);
-            MainCol = int.Parse(dict["maincol"]);
-            FontSize = int.Parse(dict["fontsize"]);
-            FontCol = int.Parse(dict["fontcol"]);
-            FontOp = double.Parse(dict["fontop"]);
-            FontSn = int.Parse(dict["fontsn"]);
+            var reader = new ConfReader("config.conf", strict: true);
+            MainOp = double.Parse(reader.GetValue("mainop"));
+            MainCol = int.Parse(reader.GetValue("maincol"));
+            FontSize = int.Parse(reader.GetValue("fontsize"));
+            FontCol = int.Parse(reader.GetValue("fontcol"));
+            FontOp = double.Parse(reader.GetValue("fontop"));
+            FontSn = int.Parse(reader.GetValue("fontsn"));
         }
 
         public void Save()
         {
             try
             {
-                var xdoc = XDocument.Load(Path.Combine(Environment.CurrentDirectory, "config.xml"));
-                var pairs = xdoc.Root;
+                var reader = new ConfReader("config.conf", strict: true);
+                reader.ChangeValue("mainop", MainOp.ToString(), false);
+                reader.ChangeValue("maincol", MainCol.ToString(), false);
+                reader.ChangeValue("fontsize", FontSize.ToString(), false);
+                reader.ChangeValue("fontcol", FontCol.ToString(), false);
+                reader.ChangeValue("fontop", FontOp.ToString(), false);
+                reader.ChangeValue("fontsn", FontSn.ToString(), false);
 
-                pairs.Element("mainop").Value = MainOp.ToString();
-                pairs.Element("maincol").Value = MainCol.ToString();
-                pairs.Element("fontsize").Value = FontSize.ToString();
-                pairs.Element("fontcol").Value = FontCol.ToString();
-                pairs.Element("fontop").Value = FontOp.ToString();
-                pairs.Element("fontsn").Value = FontSn.ToString();
-
-                xdoc.Save(Path.Combine(Environment.CurrentDirectory, "config.xml"));
+                reader.SaveConf();
             }
             catch
             {
                 SetDefault();
             }
         }
-
-        private static readonly string _defaultconfig =
-@"<?xml version=""1.0"" encoding=""utf-8"" ?>
-<config>
-  <mainop value=""0-1"">0.5</mainop>
-  <maincol value=""white=0, black=1"">0</maincol>
-  <fontsize value=""12-46"">32</fontsize>
-  <fontcol value=""white=0, black=1"">0</fontcol>
-  <fontop value=""0-1"">0.5</fontop>
-  <fontsn value=""5-15"">8</fontsn>
-</config>";
     }
 }
