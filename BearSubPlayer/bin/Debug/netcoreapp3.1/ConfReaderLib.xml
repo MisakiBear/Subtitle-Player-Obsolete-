@@ -49,6 +49,36 @@
             <exception cref="T:System.IO.FileNotFoundException"></exception>
             <exception cref="T:ConfReaderLib.BadConfException"></exception>
         </member>
+        <member name="M:ConfReaderLib.ConfReader.SetProperties(System.Object,ConfReaderLib.ParseFromString,System.String[],System.Boolean)">
+            <summary>
+            Set the class's properties specified automatically.
+            </summary>
+            <param name="obj">Class object.</param>
+            <param name="rule">Parse rule.</param>
+            <param name="keys">
+            Specify the keys that need to be set. 
+            Default: Set all keys contained in the config file.
+            </param>
+            <param name="strict">
+            If ture, any key that does not be set to the property will throw exception.
+            </param>
+            <exception cref="T:ConfReaderLib.BadConfException"></exception>
+        </member>
+        <member name="M:ConfReaderLib.ConfReader.SetFields(System.Object,ConfReaderLib.ParseFromString,System.String[],System.Boolean)">
+            <summary>
+            Set the class's fields specified automatically.
+            </summary>
+            <param name="obj">Class object.</param>
+            <param name="rule">Parse rule.</param>
+            <param name="keys">
+            Specify the keys that need to be set. 
+            Default: Set all keys contained in the config file.
+            </param>
+            <param name="strict">
+            If ture, any key that does not be set to the field will throw exception.
+            </param>
+            <exception cref="T:ConfReaderLib.BadConfException"></exception>
+        </member>
         <member name="M:ConfReaderLib.ConfReader.GetAllKeys">
             <summary>
             Get all keys existed in config.
@@ -104,6 +134,36 @@
             <param name="save">If true, update the config file immediately.</param>
             <exception cref="T:ConfReaderLib.BadConfException"></exception>
         </member>
+        <member name="M:ConfReaderLib.ConfReader.SaveProperties(System.Object,ConfReaderLib.ParseToString,System.String[],System.Boolean)">
+            <summary>
+            Save the class's properties specified automatically.
+            </summary>
+            <param name="obj">Class object.</param>
+            <param name="rule">Parse rule.</param>
+            <param name="keys">
+            Specify the keys that need to be save. 
+            Default: Save all keys contained in the config file.
+            </param>
+            <param name="strict">
+            If ture, any key that does not be saved from the property will throw exception.
+            </param>
+            <exception cref="T:ConfReaderLib.BadConfException"></exception>
+        </member>
+        <member name="M:ConfReaderLib.ConfReader.SaveFields(System.Object,ConfReaderLib.ParseToString,System.String[],System.Boolean)">
+            <summary>
+            Save the class's fields specified automatically.
+            </summary>
+            <param name="obj">Class object.</param>
+            <param name="rule">Parse rule.</param>
+            <param name="keys">
+            Specify the keys that need to be save. 
+            Default: Save all keys contained in the config file.
+            </param>
+            <param name="strict">
+            If ture, any key that does not be saved from the field will throw exception.
+            </param>
+            <exception cref="T:ConfReaderLib.BadConfException"></exception>
+        </member>
         <member name="M:ConfReaderLib.ConfReader.SaveConf">
             <summary>
             Save configs to the config file immediately.
@@ -117,6 +177,22 @@
             <param name="path"></param>
             <param name="symbol"></param>
             <exception cref="T:ConfReaderLib.BadConfException"></exception>
+        </member>
+        <member name="T:ConfReaderLib.ParseToString">
+            <summary>
+            Set the rules for parsing properties or fields' values to the config file.
+            Default contains the rules of the type 'int' and 'string'.
+            <para>Class ParseToString can be used like above:</para>
+            <para>var rule = new ParseToString() { [typeof(int)] = x => x.ToString() };</para>
+            </summary>
+        </member>
+        <member name="T:ConfReaderLib.ParseFromString">
+            <summary>
+            Set the rules for parsing the config file to properties or fields' values.
+            Default contains the rules of the type 'int' and 'string'.
+            <para>Class ParseToString can be used like above:</para>
+            <para>var rule = new ParseFromString() { [typeof(int)] = x => int.Parse(x) };</para>
+            </summary>
         </member>
     </members>
 </doc>

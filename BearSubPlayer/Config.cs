@@ -49,14 +49,12 @@ namespace BearSubPlayer
 
         private void Load()
         {
-
             var reader = new ConfReader("config.conf", strict: true);
-            MainOp = double.Parse(reader.GetValue("mainop"));
-            MainCol = int.Parse(reader.GetValue("maincol"));
-            FontSize = int.Parse(reader.GetValue("fontsize"));
-            FontCol = int.Parse(reader.GetValue("fontcol"));
-            FontOp = double.Parse(reader.GetValue("fontop"));
-            FontSn = int.Parse(reader.GetValue("fontsn"));
+            var rule = new ParseFromString()
+            {
+                [typeof(double)] = x => double.Parse(x),
+            };
+            reader.SetProperties(this, rule, strict: true);
         }
 
         public void Save()
@@ -64,14 +62,11 @@ namespace BearSubPlayer
             try
             {
                 var reader = new ConfReader("config.conf", strict: true);
-                reader.ChangeValue("mainop", MainOp.ToString(), false);
-                reader.ChangeValue("maincol", MainCol.ToString(), false);
-                reader.ChangeValue("fontsize", FontSize.ToString(), false);
-                reader.ChangeValue("fontcol", FontCol.ToString(), false);
-                reader.ChangeValue("fontop", FontOp.ToString(), false);
-                reader.ChangeValue("fontsn", FontSn.ToString(), false);
-
-                reader.SaveConf();
+                var rule = new ParseToString()
+                {
+                    [typeof(double)] = x => x.ToString(),
+                };
+                reader.SaveProperties(this, rule, strict: true);
             }
             catch
             {
