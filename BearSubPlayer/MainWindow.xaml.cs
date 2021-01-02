@@ -1,5 +1,4 @@
 ﻿using System;
-using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Input;
@@ -43,6 +42,15 @@ namespace BearSubPlayer
             ArrHandler.Serv.TimeSldChangeReq += TimeSldValue;
             ArrHandler.Serv.PlayWidgetsChangeReq += PlayWidgetControl;
             ArrHandler.Serv.MainResetReq += MainReset;
+
+            // Init TriggerSource
+            _triggerSource = new TriggerSource(3000, () =>
+            {
+                this.InvokeIfNeeded(() =>
+                {
+                    MenuPanel.Visibility = Visibility.Hidden;
+                });
+            }, pullImmed: false);
         }
 
         private void Main_MouseDown(object sender, MouseButtonEventArgs e)
@@ -58,23 +66,11 @@ namespace BearSubPlayer
 
         private void Main_MouseMove(object sender, MouseEventArgs e)
         {
-            if (_triggerSource == null)
-            {
-                _triggerSource = new TriggerSource(3000, () =>
-                {
-                    this.InvokeIfNeeded(() =>
-                    {
-                        MenuPanel.Visibility = Visibility.Hidden;
-                    });
-                }, pullImmed: false);
-            }
-
             if (_triggerSource.Trigger.IsPulled)
             {
                 _triggerSource.CreateNewTrigger(pullImmed: false);
+                MenuPanel.Visibility = Visibility.Visible;
             }
-
-            MenuPanel.Visibility = Visibility.Visible;
         }
 
         private async void SubLabel_MouseDoubleClick(object sender, MouseButtonEventArgs e)
