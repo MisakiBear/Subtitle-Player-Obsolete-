@@ -5,6 +5,7 @@ using System.Windows.Controls;
 using System.Windows.Input;
 using System.Windows.Media;
 using Microsoft.Win32;
+using TriggerLib;
 
 namespace BearSubPlayer
 {
@@ -14,7 +15,7 @@ namespace BearSubPlayer
     public partial class MainWindow : Window
     {
         private Core _core;
-        private bool _isActive;
+        private TriggerSource _triggerSource;
         private Brush _currentBrush;
 
         public MainWindow()
@@ -50,17 +51,29 @@ namespace BearSubPlayer
                 this.DragMove();
         }
 
-        private async void Main_MouseLeave(object sender, MouseEventArgs e)
+        private void Main_MouseLeave(object sender, MouseEventArgs e)
         {
-            _isActive = false;
-            await Task.Delay(3000);
-            if (!_isActive)
-                MenuPanel.Visibility = Visibility.Hidden;
+            _triggerSource.Pull();
         }
 
         private void Main_MouseMove(object sender, MouseEventArgs e)
         {
-            _isActive = true;
+            if (_triggerSource == null)
+            {
+                _triggerSource = new TriggerSource(3000, () =>
+                {
+                    this.InvokeIfNeeded(() =>
+                    {
+                        MenuPanel.Visibility = Visibility.Hidden;
+                    });
+                }, pullImmed: false);
+            }
+
+            if (_triggerSource.Trigger.IsPulled)
+            {
+                _triggerSource.CreateNewTrigger(pullImmed: false);
+            }
+
             MenuPanel.Visibility = Visibility.Visible;
         }
 

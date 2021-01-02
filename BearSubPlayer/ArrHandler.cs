@@ -174,7 +174,7 @@ namespace BearSubPlayer
         private void MainReset(bool ispartial)
         {
             if (!ispartial)
-                SubLbContents("Double click there to select a srt file");
+                SubLbContents("Double click here to select a srt file");
             PlayWidgetControl(false);
             TimeSldValue(0);
             TimeLbContents("00:00:00 / 00:00:00");

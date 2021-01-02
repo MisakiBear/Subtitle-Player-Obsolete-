@@ -4,12 +4,15 @@
     <OutputType>WinExe</OutputType>
     <TargetFramework>netcoreapp3.1</TargetFramework>
     <UseWPF>true</UseWPF>
-    <Version>1.1.1</Version>
+    <Version>1.1.2</Version>
   </PropertyGroup>
 
   <ItemGroup>
     <Reference Include="ConfReaderLib">
       <HintPath>Extension\ConfReaderLib.dll</HintPath>
+    </Reference>
+    <Reference Include="TriggerLib">
+      <HintPath>Extension\TriggerLib.dll</HintPath>
     </Reference>
   </ItemGroup>
 

@@ -6,9 +6,10 @@
   "compilationOptions": {},
   "targets": {
     ".NETCoreApp,Version=v3.1": {
-      "BearSubPlayer/1.1.1": {
+      "BearSubPlayer/1.1.2": {
         "dependencies": {
-          "ConfReaderLib": "1.0.2.0"
+          "ConfReaderLib": "1.0.2.0",
+          "TriggerLib": "1.0.0.0"
         },
         "runtime": {
           "BearSubPlayer.dll": {}
@@ -21,16 +22,29 @@
             "fileVersion": "1.0.2.0"
           }
         }
+      },
+      "TriggerLib/1.0.0.0": {
+        "runtime": {
+          "TriggerLib.dll": {
+            "assemblyVersion": "1.0.0.0",
+            "fileVersion": "1.0.0.0"
+          }
+        }
       }
     }
   },
   "libraries": {
-    "BearSubPlayer/1.1.1": {
+    "BearSubPlayer/1.1.2": {
       "type": "project",
       "serviceable": false,
       "sha512": ""
     },
     "ConfReaderLib/1.0.2.0": {
+      "type": "reference",
+      "serviceable": false,
+      "sha512": ""
+    },
+    "TriggerLib/1.0.0.0": {
       "type": "reference",
       "serviceable": false,
       "sha512": ""
