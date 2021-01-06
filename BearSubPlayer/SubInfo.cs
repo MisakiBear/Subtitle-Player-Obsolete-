@@ -2,10 +2,10 @@
 
 namespace BearSubPlayer
 {
-    public class SubInfo
+    public record SubInfo
     {
-        public TimeSpan TStart { get; set; }
-        public TimeSpan TEnd { get; set; }
-        public string Contents { get; set; }
+        public TimeSpan TStart { get; init; }
+        public TimeSpan TEnd { get; init; }
+        public string Contents { get; init; }
     }
 }

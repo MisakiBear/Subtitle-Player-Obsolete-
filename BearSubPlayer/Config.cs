@@ -42,7 +42,7 @@ namespace BearSubPlayer
             }
         }
 
-        public void SetDefault()
+        public static void SetDefault()
         {
             ConfReader.Create(_defaultconfig, "config.conf");
         }

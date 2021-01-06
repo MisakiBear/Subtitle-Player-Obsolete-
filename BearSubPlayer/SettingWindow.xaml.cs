@@ -9,7 +9,7 @@ namespace BearSubPlayer
     /// </summary>
     public partial class SettingWindow : Window
     {
-        public static bool IsOpened = false;
+        public static bool IsOpened { get; private set; } = false;
 
         public SettingWindow()
         {
@@ -22,7 +22,7 @@ namespace BearSubPlayer
             var config = new Config();
 
             OpacitySld.Value = config.MainOp;
-            OpacityLb.Content = (int)(config.MainOp * 100);
+            OpacityLb.Content = (int)(config.MainOp * 100) + "%";
 
             if (config.MainCol == 0)  // White
                 WhiteRBtn.IsChecked = true;
@@ -30,7 +30,7 @@ namespace BearSubPlayer
                 BlackRBtn.IsChecked = true;
 
             FontSizeSld.Value = config.FontSize;
-            FontSizeLb.Content = config.FontSize;
+            FontSizeLb.Content = config.FontSize + "pt";
 
             if (config.FontCol == 0)  // White
                 FontWhiteRBtn.IsChecked = true;
@@ -38,7 +38,7 @@ namespace BearSubPlayer
                 FontBlackRBtn.IsChecked = true;
 
             FontShadowOpacitySld.Value = config.FontOp;
-            FontShadowOpacityLb.Content = (int)(config.FontOp * 100);
+            FontShadowOpacityLb.Content = (int)(config.FontOp * 100) + "%";
             FontShadowSoftnessSld.Value = config.FontSn;
             FontShadowSoftnessLb.Content = config.FontSn;
         }
@@ -53,11 +53,11 @@ namespace BearSubPlayer
         {
             if (this.IsInitialized)
             {
-                OpacityLb.Content = (int)(OpacitySld.Value * 100);  // Change float to %
+                OpacityLb.Content = (int)(OpacitySld.Value * 100) + "%";  // Change float to %
                 if ((bool)WhiteRBtn.IsChecked)
-                    ArrHandler.Serv.MainBackground(Brushes.Black, Colors.White, OpacitySld.Value);
+                    MainWindow.Arr.MainBackground(Brushes.Black, Colors.White, OpacitySld.Value);
                 else
-                    ArrHandler.Serv.MainBackground(Brushes.White, Colors.Black, OpacitySld.Value);
+                    MainWindow.Arr.MainBackground(Brushes.White, Colors.Black, OpacitySld.Value);
             }
         }
 
@@ -71,15 +71,15 @@ namespace BearSubPlayer
         {
             if (this.IsInitialized)
             {
-                FontSizeLb.Content = (int)FontSizeSld.Value;
-                FontShadowOpacityLb.Content = (int)(FontShadowOpacitySld.Value * 100); // Change float to %
+                FontSizeLb.Content = (int)FontSizeSld.Value + "pt";
+                FontShadowOpacityLb.Content = (int)(FontShadowOpacitySld.Value * 100) + "%"; // Change float to %
                 FontShadowSoftnessLb.Content = (int)FontShadowSoftnessSld.Value;
 
                 if ((bool)FontWhiteRBtn.IsChecked)
-                    ArrHandler.Serv.FontEffect(Brushes.White, Colors.White, FontShadowOpacitySld.Value,
+                    MainWindow.Arr.FontEffect(Brushes.White, Colors.White, FontShadowOpacitySld.Value,
                         FontShadowSoftnessSld.Value, FontSizeSld.Value);
                 else
-                    ArrHandler.Serv.FontEffect(Brushes.Black, Colors.Black, FontShadowOpacitySld.Value,
+                    MainWindow.Arr.FontEffect(Brushes.Black, Colors.Black, FontShadowOpacitySld.Value,
                         FontShadowSoftnessSld.Value, FontSizeSld.Value);
             }
         }
@@ -92,8 +92,8 @@ namespace BearSubPlayer
 
         private void SetDefaultBtn_Click(object sender, RoutedEventArgs e)
         {
-            new Config().SetDefault();
-            ArrHandler.Serv.MainInitialize();
+            Config.SetDefault();
+            MainWindow.Arr.MainInitialize();
             Initialize();
         }
 

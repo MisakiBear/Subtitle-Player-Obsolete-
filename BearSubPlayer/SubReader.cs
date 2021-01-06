@@ -1,48 +1,55 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.IO;
+using System.Collections.Generic;
 using System.Text.RegularExpressions;
 
 namespace BearSubPlayer
 {
-    public class SubReader
+    public static class SubReader
     {
-        private readonly string _path;
-
-        public SubReader(string path)
-            => this._path = path;
-
-        public List<SubInfo> ReadSrt()
+        public static List<SubInfo> ReadSrt(string path)
         {
-            using var reader = new StreamReader(_path);
+            using var reader = new StreamReader(path);
             var sublist = new List<SubInfo>();
-            var templines = new List<string>();
+            var subblock = new List<string>();
+
             while (!reader.EndOfStream)
             {
                 var line = reader.ReadLine();
-                if (line == "" && templines.Count != 0)   // The end of one subtitle
+                if (line == "" && subblock.Count != 0)   // The end of one subtitle
                 {
-                    var subinfo = new SubInfo();
-                    var time = templines[1].Split(" --> ");    // Second line is time info
-                    subinfo.TStart = TimeSpan.Parse(time[0].Replace(',', '.'));
-                    subinfo.TEnd = TimeSpan.Parse(time[1].Replace(',', '.'));
-
-                    for (var i = 2; i < templines.Count; i++)  // Third line to the last line is subtitle info
-                    {
-                        subinfo.Contents += Regex.Replace(templines[i], @"<.*?>|{.*?}", "");
-                        if (i < templines.Count - 1)
-                            subinfo.Contents += "\n";
-                    }
-
-                    sublist.Add(subinfo);
-                    templines.Clear();
+                    sublist.Add(SrtInterpret(subblock));
+                    subblock.Clear();
                 }
                 else
                 {
-                    templines.Add(line);
+                    subblock.Add(line);
                 }
             }
+
             return sublist;
+        }
+
+        public static SubInfo SrtInterpret(List<string> subblock)
+        {
+            var time = subblock[1].Replace(',', '.').Split(" --> ");    // Second line is time info
+            var tstart = TimeSpan.Parse(time[0]);
+            var tend = TimeSpan.Parse(time[1]);
+
+            var contents = "";
+            for (var i = 2; i < subblock.Count; i++)  // Third line to the last line is subtitle info
+            {
+                contents += Regex.Replace(subblock[i], @"<.*?>|{.*?}", "");  // Remove font info
+                if (i < subblock.Count - 1)
+                    contents += "\n";
+            }
+
+            return new SubInfo()
+            {
+                TStart = tstart,
+                TEnd = tend,
+                Contents = contents,
+            };
         }
     }
 }
