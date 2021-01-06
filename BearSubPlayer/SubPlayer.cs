@@ -53,8 +53,6 @@ namespace BearSubPlayer
             }
         }
 
-
-
         public void TimeSldChanged(double timesldvalue)
         {
             var time = (int)(timesldvalue * _subTimer.TotalTime.TotalMilliseconds / 100);

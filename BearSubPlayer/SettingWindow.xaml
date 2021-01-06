@@ -5,7 +5,7 @@
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:BearSubPlayer"
         mc:Ignorable="d"
-        Title="Setting" Height="251" Width="340" ResizeMode="NoResize"
+        Title="Setting" Height="250" Width="340" ResizeMode="NoResize"
         Activated="SettingWindow_Activated"
         Closing="SettingWindow_Closing">
     <Grid>
