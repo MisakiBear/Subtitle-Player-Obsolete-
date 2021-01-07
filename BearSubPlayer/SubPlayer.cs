@@ -12,14 +12,24 @@ namespace BearSubPlayer
         private readonly SubTimer _subTimer;
         private string _currentContents;
 
-        public SubPlayer(List<SubInfo> sublist)
+        private SubPlayer(List<SubInfo> sublist, string filename)
         {
             _subList = sublist;
-            var totaltime = _subList[^1].TEnd;    // [^1]  C# 8.0
+            var totaltime = _subList.Max(info => info.TEnd);
             _subTimer = new SubTimer(totaltime);
             _subTimer.Elapsed += Display;
 
+            ShowLoadedNotice(filename, totaltime);
             MainWindow.Arr.PlayWidgetControl(true);
+        }
+
+        private static void ShowLoadedNotice(string filename, TimeSpan totaltime)
+        {
+            if (filename.Length > 35)
+                MainWindow.Arr.SubLbContents(filename.Substring(0, 35) + "... is loaded");
+            else
+                MainWindow.Arr.SubLbContents(filename + " is loaded");
+            MainWindow.Arr.TimeLbContents($"00:00:00 / {totaltime:hh\\:mm\\:ss}");
         }
 
         public async Task PlayAsync()
@@ -115,30 +125,31 @@ namespace BearSubPlayer
             MainWindow.Arr.TimeSldValue(elapsedtime.TotalMilliseconds / totaltime.TotalMilliseconds * 100);
         }
 
-        public static async Task<List<SubInfo>> GetSubListAsync(string path)
+        public static async Task<SubPlayer> CreateSubPlayerAsync(string path)
         {
             try
             {
-                var sublist = await Task.Run(() => SubReader.ReadSrt(path));
+                var subreader = GetSubReader(Path.GetExtension(path));
+                var sublist = await subreader.ReadAsync(path);
                 var filename = Path.GetFileName(path);
-                var totaltime = sublist[^1].TEnd;
-                ShowLoadedNotice(filename, totaltime);
-                return sublist;
+
+                return new SubPlayer(sublist, filename);
             }
             catch
             {
-                MainWindow.Arr.SubLbContents("An invalid srt file, please try again");
+                MainWindow.Arr.SubLbContents("An invalid subtitle file, please try again");
                 return null;
             }
         }
 
-        private static void ShowLoadedNotice(string filename, TimeSpan totaltime)
+        private static ISubReader GetSubReader(string ext)
         {
-            if (filename.Length > 35)
-                MainWindow.Arr.SubLbContents(filename.Substring(0, 35) + "... is loaded");
-            else
-                MainWindow.Arr.SubLbContents(filename + " is loaded");
-            MainWindow.Arr.TimeLbContents($"00:00:00 / {totaltime:hh\\:mm\\:ss}");
+            return ext switch
+            {
+                ".srt" => new SrtReader(),
+                ".ass" => new AssReader(),
+                _ => throw new Exception("Unknown exception")
+            };
         }
     }
 }

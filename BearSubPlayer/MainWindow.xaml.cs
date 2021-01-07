@@ -71,16 +71,14 @@ namespace BearSubPlayer
             var dlg = new OpenFileDialog
             {
                 DefaultExt = ".srt", // Default file extension
-                Filter = "SRT File (.srt)|*.srt" // Filter files by extension
+                Filter = "Sub File (*.srt, *ass)|*.srt;*.ass" // Filter files by extension
             };
 
             var result = dlg.ShowDialog();
             if (!(bool)result) return;
 
             MainReset(true);
-            var sublist = await SubPlayer.GetSubListAsync(dlg.FileName);
-            if (sublist != null)
-                _subPlayer = new SubPlayer(sublist);
+            _subPlayer = await SubPlayer.CreateSubPlayerAsync(dlg.FileName);
         }
 
         private async void PlayLb_MouseDown(object sender, MouseButtonEventArgs e)

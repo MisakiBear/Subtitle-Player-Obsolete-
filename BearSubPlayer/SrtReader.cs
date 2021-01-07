@@ -2,12 +2,13 @@
 using System.IO;
 using System.Collections.Generic;
 using System.Text.RegularExpressions;
+using System.Threading.Tasks;
 
 namespace BearSubPlayer
 {
-    public static class SubReader
+    public class SrtReader : ISubReader
     {
-        public static List<SubInfo> ReadSrt(string path)
+        public List<SubInfo> Read(string path)
         {
             using var reader = new StreamReader(path);
             var sublist = new List<SubInfo>();
@@ -30,7 +31,7 @@ namespace BearSubPlayer
             return sublist;
         }
 
-        public static SubInfo SrtInterpret(List<string> subblock)
+        private static SubInfo SrtInterpret(List<string> subblock)
         {
             var time = subblock[1].Replace(',', '.').Split(" --> ");    // Second line is time info
             var tstart = TimeSpan.Parse(time[0]);
@@ -51,5 +52,8 @@ namespace BearSubPlayer
                 Contents = contents,
             };
         }
+
+        public async Task<List<SubInfo>> ReadAsync(string path)
+            => await Task.Run(() => Read(path));
     }
 }
