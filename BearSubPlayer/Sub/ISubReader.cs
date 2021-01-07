@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using System.Threading.Tasks;
 
-namespace BearSubPlayer
+namespace BearSubPlayer.Sub
 {
     public interface ISubReader
     {

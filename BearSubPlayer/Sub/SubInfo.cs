@@ -1,6 +1,6 @@
 ﻿using System;
 
-namespace BearSubPlayer
+namespace BearSubPlayer.Sub
 {
     public record SubInfo
     {

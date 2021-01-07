@@ -3,8 +3,9 @@ using System.IO;
 using System.Linq;
 using System.Threading.Tasks;
 using System.Collections.Generic;
+using BearSubPlayer.Sub;
 
-namespace BearSubPlayer
+namespace BearSubPlayer.Core
 {
     public class SubPlayer
     {
@@ -20,34 +21,34 @@ namespace BearSubPlayer
             _subTimer.Elapsed += Display;
 
             ShowLoadedNotice(filename, totaltime);
-            MainWindow.Arr.PlayWidgetControl(true);
+            UIControl.Request(Element.PlayPanel, true);
         }
 
         private static void ShowLoadedNotice(string filename, TimeSpan totaltime)
         {
             if (filename.Length > 35)
-                MainWindow.Arr.SubLbContents(filename.Substring(0, 35) + "... is loaded");
+                UIControl.Request(Element.SubLabel, filename.Substring(0, 35) + "... is loaded");
             else
-                MainWindow.Arr.SubLbContents(filename + " is loaded");
-            MainWindow.Arr.TimeLbContents($"00:00:00 / {totaltime:hh\\:mm\\:ss}");
+                UIControl.Request(Element.SubLabel, filename + " is loaded");
+
+            UIControl.Request(Element.TimeLabel, $"00:00:00 / {totaltime:hh\\:mm\\:ss}");
         }
 
         public async Task PlayAsync()
         {
             if (_subTimer.IsRunning) return;
 
-            MainWindow.Arr.SubLbIsEnabled(false);  // The file can be loaded only the player isn't playing
-            MainWindow.Arr.PlayWidgetControl(false);  // Lock the play widget
+            UIControl.Request(Element.SubLabel, false);  // The file can be loaded only the player isn't playing
+            UIControl.Request(Element.PlayPanel, false);  // Lock the play widget
 
             for (var i = 6; i >= 1; i--)
             {
-                MainWindow.Arr.SubLbContents(i % 2 == 0 ? Repeat("=", i / 2) : $"- {i / 2 + 1} -");
+                UIControl.Request(Element.SubLabel, i % 2 == 0 ? Repeat("=", i / 2) : $"- {i / 2 + 1} -");
                 await Task.Delay(500);
             }
 
-            MainWindow.Arr.PlayWidgetControl(true);
-
-            MainWindow.Arr.SubLbContents(_currentContents);
+            UIControl.Request(Element.PlayPanel, true);
+            UIControl.Request(Element.SubLabel, _currentContents);
 
             _subTimer.Start();
 
@@ -70,6 +71,14 @@ namespace BearSubPlayer
             Display();
         }
 
+        public bool MoveTo(TimeSpan time)
+        {
+            if (time < new TimeSpan(0, 0, 0, 0, 0) || time > _subTimer.TotalTime) return false;
+            _subTimer.MoveTo(time);
+            Display();
+            return true;
+        }
+
         public void Backward()
         {
             _subTimer.AdjustTime(new TimeSpan(0, 0, 0, 0, -50));
@@ -87,14 +96,14 @@ namespace BearSubPlayer
         public void Pause()
         {
             _subTimer.Pause();
-            MainWindow.Arr.SubLbIsEnabled(true);
+            UIControl.Request(Element.SubLabel, true);
         }
 
         public void Stop()
         {
             _subTimer.Stop();
-            MainWindow.Arr.MainReset(false);
-            MainWindow.Arr.SubLbIsEnabled(true);
+            UIControl.Request(Command.Reset, false);
+            UIControl.Request(Element.SubLabel, true);
         }
 
         private void Display()
@@ -112,7 +121,7 @@ namespace BearSubPlayer
 
             if (_currentContents != contents)
             {
-                MainWindow.Arr.SubLbContents(contents);
+                UIControl.Request(Element.SubLabel, contents);
                 _currentContents = contents;
             }
         }
@@ -121,8 +130,8 @@ namespace BearSubPlayer
         {
             var elapsedtime = _subTimer.ElapsedTime;
             var totaltime = _subTimer.TotalTime;
-            MainWindow.Arr.TimeLbContents($"{elapsedtime:hh\\:mm\\:ss} / {totaltime:hh\\:mm\\:ss}");
-            MainWindow.Arr.TimeSldValue(elapsedtime.TotalMilliseconds / totaltime.TotalMilliseconds * 100);
+            UIControl.Request(Element.TimeLabel, $"{elapsedtime:hh\\:mm\\:ss} / {totaltime:hh\\:mm\\:ss}");
+            UIControl.Request(Element.TimeSlider, elapsedtime.TotalMilliseconds / totaltime.TotalMilliseconds * 100);
         }
 
         public static async Task<SubPlayer> CreateSubPlayerAsync(string path)
@@ -137,7 +146,7 @@ namespace BearSubPlayer
             }
             catch
             {
-                MainWindow.Arr.SubLbContents("An invalid subtitle file, please try again");
+                UIControl.Request(Element.SubLabel, "An invalid subtitle file, please try again");
                 return null;
             }
         }

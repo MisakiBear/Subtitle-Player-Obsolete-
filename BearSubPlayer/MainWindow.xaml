@@ -25,50 +25,49 @@
             </Label.Effect>
         </Label>
         <StackPanel x:Name="MenuPanel" Orientation="Horizontal" Height="18" Width="540" Canvas.Top="62">
-            <Label x:Name="TimeLb" Content="00:00:00 / 00:00:00"
+            <StackPanel x:Name="PlayPanel" Orientation="Horizontal" IsEnabled="False">
+                <Label x:Name="TimeLb" Content="00:00:00 / 00:00:00"
                    Height="18" Width="140" BorderThickness="0" Padding="0,0,0,0"
                    HorizontalContentAlignment="Center"  VerticalContentAlignment="Center"
-                   FontSize="14" Foreground="Black"/>
-            <Slider x:Name="TimeSld" Width="250"
-                    SmallChange="1" LargeChange="10" Maximum="100" 
-                    IsEnabled="False"
+                   FontSize="14" Foreground="Black" MouseDown="TimeLb_MouseDown"/>
+                <Slider x:Name="TimeSld" Width="250" SmallChange="1" LargeChange="10" Maximum="100" 
                     MouseMove="TimeSld_MouseMove"/>
-            <Label x:Name="PlayLb" Content="▶️"
+                <Label x:Name="PlayLb" Content="▶️"
                    Height="18" Width="24"  BorderThickness="0" Padding="0,0,0,0"
                    HorizontalContentAlignment="Center" VerticalContentAlignment="Center"
-                   FontSize="14" Foreground="Black" IsEnabled="False"
-                   MouseDown="PlayLb_MouseDown"
-                   MouseMove="Label_MouseMove" MouseLeave="Label_MouseLeave"/>
-            <Label x:Name="BackwardLb" Content="⏪"
+                   FontSize="14" Foreground="Black"
+                   MouseDown="PlayLb_MouseDown" MouseMove="Label_MouseMove" MouseLeave="Label_MouseLeave"/>
+                <Label x:Name="BackwardLb" Content="⏪"
                    Height="18" Width="24" BorderThickness="0"  Padding="0,0,0,0"
                    VerticalContentAlignment="Center" HorizontalContentAlignment="Center"
-                   FontSize="14"  Foreground="Black" IsEnabled="False"
-                   MouseDown="BackWardLb_MouseDown"
-                   MouseMove="Label_MouseMove" MouseLeave="Label_MouseLeave"/>
-            <Label x:Name="ForwardLb" Content="⏩"
+                   FontSize="14"  Foreground="Black"
+                   MouseDown="BackWardLb_MouseDown" MouseMove="Label_MouseMove" MouseLeave="Label_MouseLeave"/>
+                <Label x:Name="ForwardLb" Content="⏩"
                    Height="18" Width="24" BorderThickness="0" Padding="0,0,0,0"
                    VerticalContentAlignment="Center"  HorizontalContentAlignment="Center"
-                   FontSize="14" Foreground="Black" IsEnabled="False"
-                   MouseDown="ForWardLb_MouseDown"
-                   MouseMove="Label_MouseMove" MouseLeave="Label_MouseLeave"/>
-            <Label x:Name="PauseLb" Content="⏸️"
+                   FontSize="14" Foreground="Black"
+                   MouseDown="ForWardLb_MouseDown" MouseMove="Label_MouseMove" MouseLeave="Label_MouseLeave"/>
+                <Label x:Name="PauseLb" Content="⏸️"
                    Height="18" Width="24" BorderThickness="0" Padding="0,0,0,0"
                    VerticalContentAlignment="Center"  HorizontalContentAlignment="Center"
-                   FontSize="14" Foreground="Black" IsEnabled="False"
-                   MouseDown="PauseLb_MouseDown"
-                   MouseMove="Label_MouseMove" MouseLeave="Label_MouseLeave"/>
-            <Label x:Name="StopLb" Content="⏹️"
+                   FontSize="14" Foreground="Black"
+                   MouseDown="PauseLb_MouseDown" MouseMove="Label_MouseMove" MouseLeave="Label_MouseLeave"/>
+                <Label x:Name="StopLb" Content="⏹️"
                    Height="18" Width="24" BorderThickness="0" Padding="0,0,0,0"
                    VerticalContentAlignment="Center" HorizontalContentAlignment="Center"
-                   FontSize="14" Foreground="Black" IsEnabled="False"
-                   MouseDown="StopLb_MouseDown"
-                   MouseMove="Label_MouseMove" MouseLeave="Label_MouseLeave"/>
-            <Label x:Name="SettingLb" Content="⚙️"
+                   FontSize="14" Foreground="Black"
+                   MouseDown="StopLb_MouseDown" MouseMove="Label_MouseMove" MouseLeave="Label_MouseLeave"/>
+            </StackPanel>
+                        <Label x:Name="SettingLb" Content="⚙️"
                    Height="18" Width="24" BorderThickness="0" Padding="0,0,0,0"
                    VerticalContentAlignment="Center" HorizontalContentAlignment="Center" 
                    FontSize="14" Foreground="Black"
                    MouseDown="SettingLb_MouseDown"
                    MouseMove="Label_MouseMove" MouseLeave="Label_MouseLeave"/>
         </StackPanel>
+        <TextBox Name="TimeTBox" Text="00:00:00" TextWrapping="Wrap" MaxLength="8" FontSize="14"
+                 Padding="0,0,0,0" Canvas.Top="62" Canvas.Left="10" BorderThickness="0"
+                 Width="56" HorizontalContentAlignment="Center"
+                 Visibility="Hidden" KeyDown="TimeTBox_KeyDown"/>
     </Canvas>
 </Window>

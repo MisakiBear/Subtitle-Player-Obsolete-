@@ -2,7 +2,7 @@
 using System.Diagnostics;
 using System.Timers;
 
-namespace BearSubPlayer
+namespace BearSubPlayer.Core
 {
     public class SubTimer
     {
